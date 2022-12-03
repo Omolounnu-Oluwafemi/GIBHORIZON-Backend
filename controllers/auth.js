@@ -68,9 +68,9 @@ export const login = (req, res)=>{
 
     //CHECK USER
 
-    const q = "SELECT * FROM users WHERE email = ?"
+    const q = "SELECT * FROM users WHERE email = ? AND password = ?"
 
-    db.query(q, [req.body.email,], (err, data)=> {
+    db.query(q, [req.body.email, req.body.password], (err, data)=> {
         if(err) return res.json(err)
         if(data.length === 0) 
         return res.status(404).json("User not found!");
@@ -79,9 +79,9 @@ export const login = (req, res)=>{
         const isPasswordCorrect =
             req.body.password;
 
-            // if (isPasswordCorrect) {
-            //     return res.send('Sign In successfully');
-            // }
+            if (isPasswordCorrect) {
+                 return res.send('Sign In successfully');
+             }
         if (!isPasswordCorrect) 
             return res.status(400).json("Wrong Email or Password!");
       
