@@ -12,6 +12,12 @@ export const projects = (req, res) => {
       res.send(data)
     });
   };
+export const users = (req, res) => {
+    const q = "SELECT * FROM users";
+    db.query(q, (err, data) => {
+      res.send(data)
+    });
+  };
 
 
 export const message = (req, res) => {

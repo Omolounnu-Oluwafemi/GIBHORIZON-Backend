@@ -1,5 +1,4 @@
 import {db} from "../db.js"
-import { createTransport } from "nodemailer";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs";
 
@@ -35,29 +34,29 @@ export const signup = (req, res)=>{
     });
    
     //Send password to user's email
-const transporter = createTransport({
-    host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: "oluwafemiomolounnu@gmail.com",
-    pass: "adumsdmnnozmzoal"
-    }
-});
+// const transporter = createTransport({
+//     host: 'smtp.gmail.com',
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: "oluwafemiomolounnu@gmail.com",
+//     pass: "adumsdmnnozmzoal"
+//     }
+// });
 
- const message = {
-    from: "Oluwafemi",
-    to: req.body.email,
-    subject: "Your Password",
-    text: "Your password is " + password
-};
+//  const message = {
+//     from: "Oluwafemi",
+//     to: req.body.email,
+//     subject: "Your Password",
+//     text: "Your password is " + password
+// };
 
-transporter.sendMail(message, function(err, info) {
-        if (err){
-    console.log(err)
-        } else
-        console.log( "sent:" + info);
-}); 
+// transporter.sendMail(message, function(err, info) {
+//         if (err){
+//     console.log(err)
+//         } else
+//         console.log( "sent:" + info);
+// }); 
 
 };
 
