@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 export const signup = (req, res)=>{
 
     // Create the password 
-    const password = ("GIB" + Math.random().toString(36).slice(2));
+    const token = ("GIB" + Math.random().toString(36).slice(2));
 
 
     //CHECKING EXISTING USER    
@@ -17,14 +17,14 @@ export const signup = (req, res)=>{
         if(err) return res.status(500).json(err);
         if(data.length) return res.status(409).json("User already exists!");
 
-        const p = "INSERT INTO users(firstname, lastname, email, phone, password) VALUES (?)";
+        const p = "INSERT INTO users(firstname, lastname, email, phone, token) VALUES (?)";
 
         const values = [
             req.body.firstname,
             req.body.lastname,
             req.body.email,
             req.body.phone,
-            password
+            token
         ];
 
         db.query(p, [values], (err,data)=>{
