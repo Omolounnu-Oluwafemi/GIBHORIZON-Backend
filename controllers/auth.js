@@ -5,61 +5,28 @@ import bcrypt from "bcryptjs";
 
 export const signup = (req, res)=>{
 
-    // Create the password 
-    const token = ("GIB" + Math.random().toString(36).slice(2));
+    //Hash the password and create a user
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.password, salt);
 
 
-    //CHECKING EXISTING USER    
-    const q = "SELECT * FROM users WHERE email = ?";
+    const values = [
+        req.body.firstname,
+        req.body.lastname,
+        req.body.email,
+        req.body.phone,
+        hash,
+        req.body.token  
+     ];
 
-    db.query(q, [req.body.email], (err, data)=>{
+        const p= "UPDATE users SET `firstname` = ?, `lastname` = ?, `email` = ?, `phone` = ?, `password` = ? WHERE token = ?" 
 
-        if(err) return res.status(500).json(err);
-        if(data.length) return res.status(409).json("User already exists!");
-
-        const p = "INSERT INTO users(firstname, lastname, email, phone, token) VALUES (?)";
-
-        const values = [
-            req.body.firstname,
-            req.body.lastname,
-            req.body.email,
-            req.body.phone,
-            token
-        ];
-
-        db.query(p, [values], (err,data)=>{
+      db.query(p, values , (err, data)=> {
             if (err) return res.status(500).json(err);
             return res.status(200).json("User has been created")
         });
-    });
-   
-    //Send password to user's email
-// const transporter = createTransport({
-//     host: 'smtp.gmail.com',
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     user: "oluwafemiomolounnu@gmail.com",
-//     pass: "adumsdmnnozmzoal"
-//     }
-// });
-
-//  const message = {
-//     from: "Oluwafemi",
-//     to: req.body.email,
-//     subject: "Your Password",
-//     text: "Your password is " + password
-// };
-
-// transporter.sendMail(message, function(err, info) {
-//         if (err){
-//     console.log(err)
-//         } else
-//         console.log( "sent:" + info);
-// }); 
-
-};
-
+      
+ };
 
 
 
@@ -67,22 +34,33 @@ export const login = (req, res)=>{
 
     //CHECK USER
 
-    const q = "SELECT * FROM users WHERE email = ? AND password = ?"
+    const q = "SELECT * FROM users WHERE email = ?"
 
-    db.query(q, [req.body.email, req.body.password], (err, data)=> {
+    db.query(q, [req.body.email], (err, data)=> {
         if(err) return res.json(err)
         if(data.length === 0) 
         return res.status(404).json("User not found!");
  
         //CHECK PASSWORD
-        const isPasswordCorrect =
-            req.body.password;
+        // const isPasswordCorrect =
+        //     req.body.password;
 
-            if (isPasswordCorrect) {
-                 return res.send('Sign In successfully');
-             }
-        if (!isPasswordCorrect) 
-            return res.status(400).json("Wrong Email or Password!");
+        //     if (isPasswordCorrect) {
+        //          return res.send('Sign In successfully');
+        //      }
+        // if (!isPasswordCorrect) 
+        //     return res.status(400).json("Wrong Email or Password!");
+
+            //Check password
+    const isPasswordCorrect = bcrypt.compareSync(
+        req.body.password,
+        data[0].password
+      );
+
+      if (!isPasswordCorrect)
+        return res.status(400).json("Wrong username or password!");
+
+
       
 const token = jwt.sign({id:data[0].id}, "jwtkey");
 const {password, ...other}= data[0]
