@@ -19,7 +19,7 @@ export const signup = (req, res)=>{
         req.body.token  
      ];
 
-        const p= "UPDATE users SET `firstname` = ?, `lastname` = ?, `email` = ?, `phone` = ?, `password` = ? WHERE token = ?" 
+        const p= "UPDATE users SET `firstname` = ?, `lastname` = ?, `email` = ?, `phone` = ?, `password` = ? WHERE accesstoken = ?" 
 
       db.query(p, values , (err, data)=> {
             if (err) return res.status(500).json(err);
@@ -40,16 +40,6 @@ export const login = (req, res)=>{
         if(err) return res.json(err)
         if(data.length === 0) 
         return res.status(404).json("User not found!");
- 
-        //CHECK PASSWORD
-        // const isPasswordCorrect =
-        //     req.body.password;
-
-        //     if (isPasswordCorrect) {
-        //          return res.send('Sign In successfully');
-        //      }
-        // if (!isPasswordCorrect) 
-        //     return res.status(400).json("Wrong Email or Password!");
 
             //Check password
     const isPasswordCorrect = bcrypt.compareSync(
@@ -59,11 +49,9 @@ export const login = (req, res)=>{
 
       if (!isPasswordCorrect)
         return res.status(400).json("Wrong username or password!");
-
-
       
 const token = jwt.sign({id:data[0].id}, "jwtkey");
-const {password, ...other}= data[0]
+const {password, accesstoken, ...other}= data[0]
 
 res.cookie("access_token", token, {
 httpOnly:true,
