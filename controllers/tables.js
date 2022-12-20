@@ -30,15 +30,12 @@ export const message = (req, res) => {
     });
   };
 
-export const viewProfile = (req, res) => {
-
+export const viewprofile = (req, res) => {
+  const id = req.params.id
     const q = "SELECT * FROM users WHERE id = ?";
-  
-
-
-    db.query(q, req.params.id, (err, data) => {
+    db.query(q, [id], (err, data) => {
       if (err) return res.send(err);
-      return res.json(data);
+      return res.status(200).json(data[0]);
     });                                                                                                                                             
   };
 

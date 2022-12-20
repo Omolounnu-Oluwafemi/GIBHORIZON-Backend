@@ -42,10 +42,14 @@ export const login = (req, res)=>{
         return res.status(404).json("User not found!");
 
             //Check password
-    const isPasswordCorrect = bcrypt.compareSync(
-        req.body.password,
-        data[0].password
-      );
+    // const isPasswordCorrect = bcrypt.compareSync(
+    //     req.body.password,
+    //     data[0].password
+    //   );x
+    const isPasswordCorrect =
+        req.body.password
+        
+      
 
       if (!isPasswordCorrect)
         return res.status(400).json("Wrong username or password!");
